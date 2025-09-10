@@ -1,0 +1,51 @@
+{
+  "name": "arcyberlab/honeyguard",
+  "description": "ARCyberLab HoneyGuard \u2014 enterprise honeypot & decoy routes for Laravel 10/11/12: Livewire panel, queued alerts, export/purge, IP autoblock, profiles, Prometheus metrics, canary rotator, telemetry webhook, Pest tests, CI.",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "ARCyberLab",
+      "email": "security@arcyberlab.example"
+    }
+  ],
+  "require": {
+    "php": "^8.3",
+    "illuminate/support": "^10.0|^11.0|^12.0",
+    "illuminate/notifications": "^10.0|^11.0|^12.0",
+    "illuminate/events": "^10.0|^11.0|^12.0",
+    "illuminate/routing": "^10.0|^11.0|^12.0",
+    "illuminate/log": "^10.0|^11.0|^12.0",
+    "illuminate/database": "^10.0|^11.0|^12.0",
+    "illuminate/http": "^10.0|^11.0|^12.0",
+    "livewire/livewire": "^3.5"
+  },
+  "require-dev": {
+    "orchestra/testbench": "^9.0|^10.0",
+    "pestphp/pest": "^3.0",
+    "pestphp/pest-plugin-laravel": "^2.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "ARCyberLab\\HoneyGuard\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "ARCyberLab\\HoneyGuard\\Tests\\": "tests/"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "ARCyberLab\\HoneyGuard\\HoneyGuardServiceProvider"
+      ]
+    }
+  },
+  "minimum-stability": "stable",
+  "prefer-stable": true,
+  "scripts": {
+    "test": "vendor/bin/pest -q",
+    "ci": "composer validate --strict && php -l $(git ls-files '*.php' || echo '') && vendor/bin/pest -q"
+  }
+}

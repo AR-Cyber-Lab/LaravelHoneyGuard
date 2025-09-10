@@ -1,0 +1,4 @@
+<?php
+namespace ARCyberLab\HoneyGuard\Http\Controllers; use Illuminate\Routing\Controller; use Illuminate\Http\Request; use Illuminate\Support\Facades\RateLimiter; use ARCyberLab\HoneyGuard\Events\HoneyTrapTriggered; use ARCyberLab\HoneyGuard\Services\HoneyService;
+class HoneypotController extends Controller{ public function decoy(Request $r, HoneyService $svc){ $key='honey:decoy:'.$r->ip(); RateLimiter::hit($key,300); event(new HoneyTrapTriggered('route','/'.$r->path(),['ip'=>$r->ip(),'ua'=>$r->userAgent(),'extra'=>['headers'=>$r->headers->all()]])); $svc->countAndMaybeBlock($r->ip()); return response()->view('honeyguard::honey.fake-login'); }
+ public function canary(Request $r, HoneyService $svc){ event(new HoneyTrapTriggered('canary','/'.$r->path(),['ip'=>$r->ip(),'ua'=>$r->userAgent(),'extra'=>['q'=>$r->query()]])); $svc->countAndMaybeBlock($r->ip()); return response("OK\n",200)->header('Content-Type','text/plain'); } }

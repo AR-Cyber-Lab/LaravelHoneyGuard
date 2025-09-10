@@ -1,0 +1,7 @@
+<?php
+namespace ARCyberLab\HoneyGuard\Livewire; use Livewire\Attributes\Layout; use Livewire\Component; use Illuminate\Support\Facades\DB; use ARCyberLab\HoneyGuard\Services\HoneyService;
+class Panel extends Component{ public string $search=''; public int $perPage=25; public string $type='';
+ public function exportJson(){ $events=DB::table('honey_events')->orderByDesc('id')->limit(2000)->get(); return response()->streamDownload(function() use ($events){ echo json_encode($events, JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES); }, 'honeyguard-export.json'); }
+ public function purgeOld($days=90){ DB::table('honey_events')->where('created_at','<',now()->subDays($days))->delete(); $this->dispatch('hg:purged'); }
+ public function blockIp($ip){ app(HoneyService::class)->autoBlock($ip); $this->dispatch('hg:blocked'); }
+ #[Layout('honeyguard::panel.layout')] public function render(){ $q=DB::table('honey_events'); if($this->type) $q->where('type',$this->type); if($this->search){ $s='%'.$this->search.'%'; $q->where(function($w) use ($s){ $w->where('ip','like',$s)->orWhere('ua','like',$s)->orWhere('vector','like',$s); }); } $events=$q->orderByDesc('id')->paginate($this->perPage); return view('honeyguard::panel.table',['events'=>$events]); } }

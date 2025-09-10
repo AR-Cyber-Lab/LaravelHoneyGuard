@@ -1,0 +1,3 @@
+<?php
+namespace ARCyberLab\HoneyGuard\Jobs; use Illuminate\Bus\Queueable; use Illuminate\Contracts\Queue\ShouldQueue; use Illuminate\Foundation\Bus\Dispatchable; use Illuminate\Support\Facades\{Http,Log};
+class SendSlackWebhookJob implements ShouldQueue{ use Dispatchable, Queueable; public function __construct(public string $hook, public array $payload){} public function handle(): void{ try{ Http::timeout(3)->post($this->hook,['text'=>sprintf(':rotating_light: HoneyGuard %s on `%s` from %s (%s)',$this->payload['type']??'-',$this->payload['vector']??'-',$this->payload['ip']??'-',$this->payload['ua']??'-')]); }catch(\Throwable $e){ Log::warning('HoneyGuard Slack job failed: '.$e->getMessage()); } } }

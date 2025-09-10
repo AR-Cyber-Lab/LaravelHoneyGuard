@@ -1,0 +1,3 @@
+<?php
+namespace ARCyberLab\HoneyGuard\Notifications; use Illuminate\Bus\Queueable; use Illuminate\Contracts\Queue\ShouldQueue; use Illuminate\Notifications\Notification; use Illuminate\Notifications\Messages\MailMessage;
+class HoneyTrapNotification extends Notification implements ShouldQueue{ use Queueable; public function __construct(private array $payload){} public function via($n){return ['mail'];} public function toMail($n){ return (new MailMessage)->subject('HoneyGuard incident: '.$this->payload['type'])->line('Vector: '.$this->payload['vector'])->line('IP: '.$this->payload['ip'].' | UA: '.$this->payload['ua'])->line('Extras: '.json_encode($this->payload['extra'])); } }

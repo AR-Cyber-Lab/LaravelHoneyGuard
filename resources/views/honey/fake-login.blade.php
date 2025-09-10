@@ -1,0 +1,1 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Admin</title></head><body><h1>Admin Login</h1><form><input name="user"><input name="pass" type="password"><button>Login</button></form></body></html>

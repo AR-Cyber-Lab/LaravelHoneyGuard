@@ -1,0 +1,4 @@
+<?php
+namespace ARCyberLab\HoneyGuard\Console; use Illuminate\Console\Command; use Illuminate\Support\Str;
+class RotateCanaryCommand extends Command{ protected $signature='honeyguard:rotate-canary {--keep=2 : how many old canaries to keep}'; protected $description='Rotate .well-known/honey-{uuid}.txt canary token';
+ public function handle(): int{ $dir=public_path('.well-known'); if(!is_dir($dir)) @mkdir($dir,0777,true); $files=glob($dir.'/honey-*.txt')?:[]; natsort($files); $keep=max(0,(int)$this->option('keep')); $toRemove=array_slice($files,0,max(0,count($files)-$keep)); foreach($toRemove as $f) @unlink($f); $token=(string)Str::uuid(); $file=$dir.'/honey-'.$token.'.txt'; file_put_contents($file,"canary: ".$token."\n"); $this->info('New canary: '.$file); return self::SUCCESS; } }

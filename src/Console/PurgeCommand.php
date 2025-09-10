@@ -1,0 +1,4 @@
+<?php
+namespace ARCyberLab\HoneyGuard\Console; use Illuminate\Console\Command; use Illuminate\Support\Facades\DB; use Carbon\Carbon;
+class PurgeCommand extends Command{ protected $signature='honeyguard:purge {--days=}'; protected $description='Purge HoneyGuard events older than N days (default from config).';
+ public function handle(): int{ $days=$this->option('days')!==null?(int)$this->option('days'):(int)config('honeyguard.retention_days',90); $cut=Carbon::now()->subDays($days); $deleted=DB::table('honey_events')->where('created_at','<',$cut)->delete(); $this->info('Purged '.$deleted.' events older than '.$days.' days.'); return self::SUCCESS; } }

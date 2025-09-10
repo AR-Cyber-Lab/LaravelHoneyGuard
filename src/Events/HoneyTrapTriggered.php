@@ -1,0 +1,2 @@
+<?php
+namespace ARCyberLab\HoneyGuard\Events; use Illuminate\Foundation\Events\Dispatchable; class HoneyTrapTriggered{ use Dispatchable; public function __construct(public string $type, public string $vector, public array $context){} }

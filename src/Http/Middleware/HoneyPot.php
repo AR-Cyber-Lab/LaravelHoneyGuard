@@ -1,0 +1,4 @@
+<?php
+namespace ARCyberLab\HoneyGuard\Http\Middleware; use Closure; use ARCyberLab\HoneyGuard\Events\HoneyTrapTriggered;
+class HoneyPot{ public function handle($request, Closure $next){ $cfg=config('honeyguard'); $field=$cfg['honeypot_field']??'website'; $ts=$cfg['timestamp_field']??'hp_ts'; $min=(int)($cfg['min_submit_seconds']??3);
+ if(in_array($request->method(),['POST','PUT','PATCH'])){ $filled=$request->filled($field); $tsv=(int)$request->input($ts,0); $delta=time()-$tsv; if($filled||$delta<$min){ event(new HoneyTrapTriggered('form',$request->path(),['ip'=>$request->ip(),'ua'=>$request->userAgent(),'extra'=>['delta'=>$delta,'q'=>$request->query(),'body_keys'=>array_keys($request->except(['password','password_confirmation']))]])); return response()->view('honeyguard::errors.generic',[],200);} } return $next($request);} }

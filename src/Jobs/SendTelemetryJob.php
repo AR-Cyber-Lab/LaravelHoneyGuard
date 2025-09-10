@@ -1,0 +1,3 @@
+<?php
+namespace ARCyberLab\HoneyGuard\Jobs; use Illuminate\Bus\Queueable; use Illuminate\Contracts\Queue\ShouldQueue; use Illuminate\Foundation\Bus\Dispatchable; use Illuminate\Support\Facades\{Http,Log};
+class SendTelemetryJob implements ShouldQueue{ use Dispatchable, Queueable; public function __construct(public string $endpoint, public ?string $token, public array $payload){} public function handle(): void{ try{ $req=Http::timeout(3); if($this->token) $req=$req->withToken($this->token); $req->post($this->endpoint,['timestamp'=>now()->toISOString(),'resource'=>'honeyguard_event','attributes'=>$this->payload]); }catch(\Throwable $e){ Log::warning('HoneyGuard Telemetry job failed: '.$e->getMessage()); } } }

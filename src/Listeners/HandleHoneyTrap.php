@@ -1,0 +1,3 @@
+<?php
+namespace ARCyberLab\HoneyGuard\Listeners; use ARCyberLab\HoneyGuard\Events\HoneyTrapTriggered; use ARCyberLab\HoneyGuard\Services\HoneyService;
+class HandleHoneyTrap{ public function __construct(private HoneyService $svc){} public function handle(HoneyTrapTriggered $e): void{ $p=['type'=>$e->type,'vector'=>$e->vector,'ip'=>$e->context['ip']??null,'ua'=>$e->context['ua']??null,'extra'=>$e->context['extra']??[]]; $this->svc->record($p); $this->svc->notify($p); $this->svc->tarpit(); if(!empty($p['ip'])) $this->svc->countAndMaybeBlock($p['ip']); } }
